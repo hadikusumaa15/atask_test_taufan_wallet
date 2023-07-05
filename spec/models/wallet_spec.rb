@@ -2,15 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Wallet, type: :model do
   it 'saves valid attributes' do
-    user = User.new(username: 'my_username', access_token: '999777')
+    wallet = Wallet.new(balance: 10_000, walletable: create(:user))
 
-    expect(user).to be_valid
+    expect(wallet).to be_valid
   end
 
-  it 'should have one wallet' do
-    user = create(:user)
-    wallet = Wallet.create!(walletable: user)
+  it 'should have 0 or more balance' do
+    wallet_minus = Wallet.new(balance: -10_000, walletable: create(:user))
+    wallet_nil = Wallet.new(balance: nil, walletable: create(:user))
 
-    expect(user.wallet).to eq(wallet)
+    expect(wallet_minus).to_not be_valid
+    expect(wallet_nil).to_not be_valid
   end
 end
