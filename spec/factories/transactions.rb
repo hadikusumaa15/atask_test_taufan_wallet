@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :transaction do
-    amount { 10.0 }
-    association :source_wallet, factory: :wallet
-    association :target_wallet, factory: :wallet
+    amount { 100.00 }
+    source_wallet { create(:wallet, walletable: create(:user)) }
+    target_wallet { create(:wallet, walletable: create(:user)) }
   end
 end

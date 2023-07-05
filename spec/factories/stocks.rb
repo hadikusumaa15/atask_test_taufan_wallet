@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :stock do
-    name { 'Test Stock' }
+    name { "Tesla" }
+    category { "Technology" }
+    description { "Electric car company." }
   end
 end
-  
