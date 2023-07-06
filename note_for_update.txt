@@ -1,1 +1,1 @@
-git add . && git commit -m 'add error message for rspec user' && git push
+git add . && git commit -m 'add username validation' && git push

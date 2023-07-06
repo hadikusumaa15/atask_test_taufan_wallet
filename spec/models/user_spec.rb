@@ -1,31 +1,47 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it 'saves valid attributes' do
-    user = User.new(username: 'my_username', access_token: '999777', password: 'my_password')
+  let(:user) { User.new(username: 'username_x') }
+  let(:valid_user) { create(:user) }
 
-    expect(user).to be_valid
+  describe 'validations' do
+    context 'when valid attributes' do
+      it 'is valid' do
+        user = User.new(username: 'my_username', access_token: '999777', password: 'my_password')
+
+        expect(user).to be_valid
+      end
+    end
+
+    context 'when password is invalid' do
+      it 'is invalid' do
+        user = User.new(username: 'my_username', access_token: '999777')
+
+        expect(user).to be_invalid
+        expect(user.errors.messages[:password]).to include "can't be blank"
+        expect(user.errors.messages[:password]).to include "is too short (minimum is 6 characters)"
+      end
+    end
+
+    context 'when username is invalid' do
+      it 'is invalid' do
+        user_2 = User.new(username: valid_user.username)
+        user_3 = User.new(username: nil)
+
+        expect(user_2).to be_invalid
+        expect(user_3).to be_invalid
+        expect(user_2.errors.messages[:username]).to include "has already been taken"
+        expect(user_3.errors.messages[:username]).to include "can't be blank"
+        expect(user_3.errors.messages[:username]).to include "is too short (minimum is 6 characters)"
+      end
+    end
   end
 
-  it 'should have one wallet' do
-    user = create(:user)
-    wallet = create(:wallet, walletable: user)
+  describe 'associations' do
+    it 'has one wallet' do
+      wallet = create(:wallet, walletable: valid_user)
 
-    expect(user.wallet).to eq(wallet)
-  end
-
-  it 'should not accept password less than 6 characters' do
-    user = User.new(username: 'my_username', access_token: '999777', password: 'pass')
-
-    expect(user.valid?).to be false
-    expect(user.errors.messages[:password]).to include "is too short (minimum is 6 characters)"
-  end
-
-  it 'should not accept passwordless user' do
-    user = User.new(username: 'my_username', access_token: '999777')
-
-    expect(user.valid?).to be false
-    expect(user.errors.messages[:password]).to include "can't be blank"
-    expect(user.errors.messages[:password]).to include "is too short (minimum is 6 characters)"
+      expect(valid_user.wallet).to eq(wallet)
+    end
   end
 end
