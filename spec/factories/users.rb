@@ -3,5 +3,6 @@ FactoryBot.define do
     username {'my_username'}
     password {'my_password'}
     access_token {'my_token'}
+    access_token_expired_date {Time.now + 1.day}
   end
 end

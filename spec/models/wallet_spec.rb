@@ -8,8 +8,9 @@ RSpec.describe Wallet, type: :model do
   end
 
   it 'should have 0 or more balance' do
-    wallet_minus = Wallet.new(balance: -10_000, walletable: create(:user))
-    wallet_nil = Wallet.new(balance: nil, walletable: create(:user))
+    user = create(:user)
+    wallet_minus = Wallet.new(balance: -10_000, walletable: user)
+    wallet_nil = Wallet.new(balance: nil, walletable: user)
 
     expect(wallet_minus).to_not be_valid
     expect(wallet_nil).to_not be_valid
