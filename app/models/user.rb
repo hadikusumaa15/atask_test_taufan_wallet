@@ -3,13 +3,9 @@ class User < ApplicationRecord
   validates :username, presence: true, length: { minimum: 6 }, uniqueness: true
   validates :password, presence: true, length: { minimum: 6 }
 
-  scope :active_access, ->(access_token) { find(
-    access_token: access_token, access_token_expired_date: Time.now
-  )}
-
   def generate_access_token
     self.access_token = SecureRandom.hex(32)
-    self.access_token_expired_date = Time.now + 1.hour
+    self.access_token_expired_date = Time.now + 1.day
     self.save
   end
 

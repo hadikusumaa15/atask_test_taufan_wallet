@@ -7,7 +7,6 @@ RSpec.describe HomeController, type: :controller do
 
       before do
         session[:access_token] = user.access_token
-        allow_any_instance_of(User).to receive(:access_token_expired_date).and_return(Time.now + 1.day)
       end
 
       it 'renders the index template' do

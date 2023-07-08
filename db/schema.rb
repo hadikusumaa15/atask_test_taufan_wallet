@@ -42,7 +42,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password", null: false
-    t.time "access_token_expired_date"
+    t.datetime "access_token_expired_date"
   end
 
   create_table "wallets", force: :cascade do |t|

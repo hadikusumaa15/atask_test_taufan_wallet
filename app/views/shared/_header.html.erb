@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="home">Atask Test</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class=>
+          <% home_class = (["/", "/home"].include? request.fullpath.to_s) ? "nav-link active" : "nav-link" %>
+          <%= link_to "Home", home_path, class: home_class %>
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "My Wallet", home_path, class: "nav-link" %>
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "Stock", home_path, class: "nav-link" %>
+        </li>
+
+        <% log_class = (["/login", "/logout"].include? request.fullpath.to_s) ? "nav-link active" : "nav-link" %>
+        <li class="nav-item">
+          <% if @current_user %>
+            <%= link_to 'Logout', logout_path, data: { turbo_method: 'delete' }, class: log_class %>
+          <% else %>
+            <%= link_to 'Login', login_path, class: log_class %>
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
