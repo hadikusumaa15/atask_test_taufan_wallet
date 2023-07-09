@@ -43,6 +43,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
     t.datetime "updated_at", null: false
     t.string "password", null: false
     t.datetime "access_token_expired_date"
+    t.integer "team_id"
+    t.index ["team_id"], name: "index_users_on_team_id"
   end
 
   create_table "wallets", force: :cascade do |t|
