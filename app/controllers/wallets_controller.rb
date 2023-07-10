@@ -1,6 +1,9 @@
 class WalletsController < ApplicationController
+  before_action :authorize_user
+
   def index
-    @wallets = Wallet.all
+    @wallet = current_user.wallet
+    @transactions = Transaction.wallet_all_transactions(wallet_id: current_user.wallet.id).paginate(:page => params[:page], per_page: 10).order('created_at DESC')
   end
 
   def show

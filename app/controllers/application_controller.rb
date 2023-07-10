@@ -7,6 +7,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_user
+    authenticate_user
+    redirect_to home_path unless @current_user
+  end
+
   def current_user
     @current_user
   end
