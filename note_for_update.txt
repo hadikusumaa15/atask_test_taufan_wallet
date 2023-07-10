@@ -1,1 +1,1 @@
-git add . && git commit -m 'add wallet page with rspec' && git push
+git add . && git commit -m 'transaction & balance validation with rspec' && git push

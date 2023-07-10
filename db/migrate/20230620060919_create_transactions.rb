@@ -4,6 +4,7 @@ class CreateTransactions < ActiveRecord::Migration[7.0]
       t.references :source_wallet, references: :wallets, index: true
       t.references :target_wallet, references: :wallets, index: true
       t.decimal :amount
+      t.string :description
       t.timestamps
     end
   end

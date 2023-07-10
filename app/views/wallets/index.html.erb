@@ -10,7 +10,7 @@
     <div class="row">
       <div class="col-md-12">
         <h2>Balance</h2>
-        <p>Your current balance is <%= @wallet.balance %> </p>
+        <p>Your current balance is <%= @wallet.current_balance %> </p>
       </div>
       <div class="col-md-12">
         <h2>Transaction History</h2>
@@ -22,6 +22,8 @@
                   <th>Date</th>
                   <th>Amount</th>
                   <th>Transaction Type</th>
+                  <th>Source</th>
+                  <th>Target</th>
                   <th>Description</th>
                 </tr>
               </thead>
@@ -31,7 +33,9 @@
                   <td><%= transaction.created_at %></td>
                   <td><%= transaction.amount %></td>
                   <td><%= transaction.transaction_type(@current_user) %></td>
-                  <td><%= "My Description" %></td>
+                  <td><%= transaction.source_wallet&.wallet_owner || 'Cash Deposit' %></td>
+                  <td><%= transaction.target_wallet&.wallet_owner || 'Cash Withdraw' %></td>
+                  <td><%= transaction.description %></td>
                 </tr>
               <% end %>
               </tbody>

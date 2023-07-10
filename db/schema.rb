@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
     t.integer "source_wallet_id"
     t.integer "target_wallet_id"
     t.decimal "amount"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["source_wallet_id"], name: "index_transactions_on_source_wallet_id"
@@ -43,6 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
     t.datetime "updated_at", null: false
     t.string "password", null: false
     t.datetime "access_token_expired_date"
+    t.boolean "is_team_admin", default: false
     t.integer "team_id"
     t.index ["team_id"], name: "index_users_on_team_id"
   end
@@ -50,7 +52,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
   create_table "wallets", force: :cascade do |t|
     t.string "walletable_type"
     t.integer "walletable_id"
-    t.float "balance"
+    t.float "balance", default: 0.0
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["walletable_type", "walletable_id"], name: "index_wallets_on_walletable"

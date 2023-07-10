@@ -8,19 +8,22 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class=>
-          <% home_class = (["/", "/home"].include? request.fullpath.to_s) ? "nav-link active" : "nav-link" %>
-          <%= link_to "Home", home_path, class: home_class %>
+          <%= link_to "Home", home_path, class: active_tab(["/", "/home"]) %>
         </li>
 
         <li class="nav-item">
-          <%= link_to "My Wallet", wallets_path, class: "nav-link" if @current_user %>
+          <%= link_to "My Wallet", wallets_path, class: active_tab(["/wallets"]) if @current_user %>
         </li>
 
         <li class="nav-item">
-          <%= link_to "Stock", home_path, class: "nav-link" if @current_user %>
+          <%= link_to "Stock", home_path, class: active_tab(["/stocks"]) if @current_user %>
         </li>
 
-        <% log_class = (["/login", "/logout"].include? request.fullpath.to_s) ? "nav-link active" : "nav-link" %>
+        <li class="nav-item">
+          <%= link_to "My Team", home_path, class: active_tab(["/teams"]) if @current_user&.is_team_admin %>
+        </li>
+
+        <% log_class = active_tab(["/login", "/logout"]) %>
         <li class="nav-item">
           <% if @current_user %>
             <%= link_to 'Logout', logout_path, data: { turbo_method: 'delete' }, class: log_class %>

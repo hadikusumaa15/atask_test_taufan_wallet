@@ -3,7 +3,7 @@ class WalletsController < ApplicationController
 
   def index
     @wallet = current_user.wallet
-    @transactions = Transaction.wallet_all_transactions(wallet_id: current_user.wallet.id).paginate(:page => params[:page], per_page: 10).order('created_at DESC')
+    @transactions = Transaction.wallet_all_transactions(wallet: @wallet).paginate(:page => params[:page], per_page: 10).order('created_at DESC')
   end
 
   def show
