@@ -31,7 +31,16 @@ RSpec.describe Transaction, type: :model do
 
     transaction.save
 
-    expect(source_wallet.current_balance).to eq 0
-    expect(target_wallet.current_balance).to eq 1000
+    expect(source_wallet.balance).to eq 0
+    expect(target_wallet.balance).to eq 1000
+  end
+
+  it 'cannot be deleted' do
+    transaction = create(:transaction)
+  
+    expect(transaction.destroy).to eq false
+    expect(transaction.delete).to eq false
+    expect(Transaction.destroy_all).to eq false
+    expect(Transaction.delete_all).to eq false
   end
 end

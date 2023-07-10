@@ -3,6 +3,7 @@ class Transaction < ApplicationRecord
   belongs_to :source_wallet, class_name: 'Wallet', optional: true
   belongs_to :target_wallet, class_name: 'Wallet', optional: true
   validates :source_wallet, with: :validate_source_balance
+  after_save :update_wallets_balance
 
   def transaction_type(user)
     self.source_wallet == user.wallet ? 'debit' : 'credit'
@@ -23,5 +24,26 @@ class Transaction < ApplicationRecord
 
   def self.wallet_credit(wallet:)
     self.where(target_wallet: wallet).pluck(:amount).compact.sum
+  end
+  
+  def update_wallets_balance
+    self.source_wallet.current_balance if self.source_wallet
+    self.target_wallet.current_balance if self.target_wallet
+  end
+
+  def delete
+   return false
+  end
+
+  def destroy
+   return false
+  end
+
+  def self.destroy_all
+   return false
+  end
+
+  def self.delete_all
+   return false
   end
 end
