@@ -1,0 +1,45 @@
+<div class="container">
+  <%= render 'shared/flash' %>
+
+  <h1>Wallet</h1>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Balance</h2>
+      <p>Your current balance is <%= @wallet.current_balance %> </p>
+    </div>
+    <div class="col-md-12">
+      <h2>Transaction History</h2>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Transaction Type</th>
+                <th>Source</th>
+                <th>Target</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+            <% @transactions.each do |transaction| %>
+              <tr>
+                <td><%= transaction.created_at %></td>
+                <td><%= transaction.amount %></td>
+                <td><%= transaction.transaction_type(@current_user) %></td>
+                <td><%= transaction.source_wallet&.wallet_owner || 'Cash Deposit' %></td>
+                <td><%= transaction.target_wallet&.wallet_owner || 'Cash Withdraw' %></td>
+                <td><%= transaction.description %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <div class="pagination justify-content-center">
+            <%= will_paginate @transactions, class: "pagination-sm" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,7 @@ class Transaction < ApplicationRecord
   belongs_to :source_wallet, class_name: 'Wallet', optional: true
   belongs_to :target_wallet, class_name: 'Wallet', optional: true
   validates :source_wallet, with: :validate_source_balance
+  validates :target_wallet, with: :validate_source_target
   after_save :update_wallets_balance
 
   def transaction_type(user)
@@ -12,6 +13,10 @@ class Transaction < ApplicationRecord
   def validate_source_balance
     self.errors.add(:amount, 'must be available') unless self.amount > 0
     self.errors.add(:balance, 'insufficient') unless self.source_wallet&.current_balance >= self.amount if self.source_wallet
+  end
+
+  def validate_source_target
+    self.errors.add(:target_wallet, 'must be different!') if self.source_wallet == self.target_wallet
   end
 
   def self.wallet_all_transactions(wallet:)

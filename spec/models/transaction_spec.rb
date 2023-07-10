@@ -45,4 +45,12 @@ RSpec.describe Transaction, type: :model do
     expect(Transaction.delete_all).to eq false
     expect(Transaction.find(transaction.id).present?).to eq true
   end
+
+  it 'should not allow transaction with similar source and target' do
+    wallet = create(:wallet, walletable: user_a)
+    create(:transaction, amount: 100, source_wallet: nil, target_wallet: wallet)
+    transaction = Transaction.new(amount: 100, source_wallet: wallet, target_wallet: wallet)
+
+    expect(transaction).to_not be_valid
+  end
 end

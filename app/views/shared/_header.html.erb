@@ -24,7 +24,7 @@
         </li>
 
         <li class="nav-item">
-          <%= link_to "My Team", home_path, class: active_tab(["/teams"]) if @current_user&.is_team_admin %>
+          <%= link_to "My Team", teams_path, class: active_tab(["/teams"]) if @current_user&.is_team_admin %>
         </li>
 
         <% log_class = active_tab(["/login", "/logout"]) %>

@@ -1,13 +1,13 @@
 if User.first.blank?
-  red_team = Team.create(name: 'red', description: 'a financial team with red attribute')
-  red_user_1 = User.create(username: 'red_user_1', password: 'password', team_id: red_team.id)
+  red_team = Team.create(name: 'the_red_team', description: 'a financial team with red attribute')
+  red_user_1 = User.create(username: 'red_user_1', password: 'password', team_id: red_team.id, is_team_admin: true)
   red_user_2 = User.create(username: 'red_user_2', password: 'password', team_id: red_team.id)
   red_wallet_1 = Wallet.create(walletable: red_user_1)
   red_wallet_2 = Wallet.create(walletable: red_user_2)
   team_red_wallet = Wallet.create(walletable: red_team)
 
-  blue_team = Team.create(name: 'blue', description: 'a financial team with blue attribute')
-  blue_user_1 = User.create(username: 'blue_user_1', password: 'password', team_id: blue_team.id)
+  blue_team = Team.create(name: 'the_blue_team', description: 'a financial team with blue attribute')
+  blue_user_1 = User.create(username: 'blue_user_1', password: 'password', team_id: blue_team.id, is_team_admin: true)
   blue_user_2 = User.create(username: 'blue_user_2', password: 'password', team_id: blue_team.id)
   blue_wallet_1 = Wallet.create(walletable: blue_user_1)
   blue_wallet_2 = Wallet.create(walletable: blue_user_2)
