@@ -8,6 +8,7 @@ RSpec.describe Transaction, type: :model do
     source_wallet = nil
     target_wallet = create(:wallet, walletable: user_a)
     transaction = Transaction.new(amount: 10.0, source_wallet: source_wallet, target_wallet: target_wallet)
+
     expect(transaction).to be_valid
   end
 
@@ -17,7 +18,7 @@ RSpec.describe Transaction, type: :model do
     transaction = Transaction.new(amount: 10.0, source_wallet: source_wallet, target_wallet: target_wallet)
 
     expect(transaction).to_not be_valid
-    expect(transaction.errors.full_messages).to eq ["Amount insufficient balance"]
+    expect(transaction.errors.full_messages).to eq ["Balance insufficient"]
   end
 
   it 'should allow sufficient source balance' do
@@ -42,5 +43,6 @@ RSpec.describe Transaction, type: :model do
     expect(transaction.delete).to eq false
     expect(Transaction.destroy_all).to eq false
     expect(Transaction.delete_all).to eq false
+    expect(Transaction.find(transaction.id).present?).to eq true
   end
 end

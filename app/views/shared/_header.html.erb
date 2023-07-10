@@ -16,6 +16,10 @@
         </li>
 
         <li class="nav-item">
+          <%= link_to "Transaction", transactions_path, class: active_tab(["/transactions"]) if @current_user %>
+        </li>
+
+        <li class="nav-item">
           <%= link_to "Stock", home_path, class: active_tab(["/stocks"]) if @current_user %>
         </li>
 

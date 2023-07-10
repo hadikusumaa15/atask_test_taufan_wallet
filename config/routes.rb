@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   delete 'logout', to: 'sessions#destroy'
   get 'home', to: 'home#index'
   get 'wallet', to: 'wallets#index'
+  get 'transactions', to: 'transactions#new'
+  post 'transactions', to: 'transactions#create'
 
   root "home#index"
 end

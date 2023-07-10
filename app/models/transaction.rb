@@ -10,8 +10,8 @@ class Transaction < ApplicationRecord
   end
 
   def validate_source_balance
-    self.errors.add(:amount, 'source amount must be available') unless self.amount > 0
-    self.errors.add(:amount, 'insufficient balance') unless self.source_wallet&.current_balance >= self.amount if self.source_wallet
+    self.errors.add(:amount, 'must be available') unless self.amount > 0
+    self.errors.add(:balance, 'insufficient') unless self.source_wallet&.current_balance >= self.amount if self.source_wallet
   end
 
   def self.wallet_all_transactions(wallet:)

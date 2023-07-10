@@ -25,3 +25,11 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.flash-success {
+  background-color: lightgreen;
+  color: darkgreen;
+  border: 1px solid green;
+  padding: 10px;
+  margin-bottom: 10px;
+}
