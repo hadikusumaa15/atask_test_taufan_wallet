@@ -14,30 +14,16 @@ class StocksController < ApplicationController
   end
 
   def create
-    source_wallet = params['transaction_type'] == 'sell' ? stock_wallet : user_wallet
-    target_wallet = params['transaction_type'] == 'sell' ? user_wallet : stock_wallet
-  
     begin
       ActiveRecord::Base.transaction do
-        stock = stock_wallet.walletable
         stock.recalculate_balance if params['transaction_type'] == 'sell'
+
         raise 'Insufficient balance' if ((params[:price].to_f * params[:quantity].to_f) > source_wallet.current_balance) && params['transaction_type'] == 'buy'
-        records = []
 
-        params[:quantity].to_i.times do
-          records << {
-            source_wallet: source_wallet,
-            target_wallet: target_wallet,
-            amount: params[:price],
-            description: "#{params['transaction_type'].upcase} '#{params[:identifier]}' Stock"
-          }
-        end
-
-        @transactions = Transaction.create(records)
+        @transactions = Transaction.create(transaction_records)
         stock.current_owned_amount
-        message = @transactions.pluck(:errors).compact.blank? ? {notice: 'Transaction success!'} : {alert: @transaction.errors.full_messages.join(', ')}
 
-        redirect_back fallback_location: root_path, notice: message[:notice], alert: message[:alert]
+        redirect_back fallback_location: root_path, notice: 'Transaction success!'
       end
     rescue => e
       redirect_back fallback_location: root_path, alert: e.message
@@ -64,6 +50,10 @@ class StocksController < ApplicationController
     wallet
   end
 
+  def stock
+    stock_wallet.walletable
+  end
+
   def selected_stocks
     begin
       return LatestStockPrice.price(indices: params[:indices], identifier: params[:identifier]) if params[:indices].present? && params[:identifier].present?
@@ -74,5 +64,28 @@ class StocksController < ApplicationController
       flash.alert = 'Stock Unavailable, please try again later.'
       []
     end
+  end
+
+  def source_wallet
+    params['transaction_type'] == 'sell' ? stock_wallet : user_wallet
+  end
+
+  def target_wallet
+    params['transaction_type'] == 'sell' ? user_wallet : stock_wallet
+  end
+
+  def transaction_records
+    records = []
+
+    params[:quantity].to_i.times do
+      records << {
+        source_wallet: source_wallet,
+        target_wallet: target_wallet,
+        amount: params[:price],
+        description: "#{params['transaction_type'].upcase} '#{params[:identifier]}' Stock"
+      }
+    end
+
+    records
   end
 end

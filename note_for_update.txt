@@ -1,1 +1,1 @@
-git add . && git commit -m 'add stock exchange with rspec' && git push
+git add . && git commit -m 'refactor stocks_controller' && git push

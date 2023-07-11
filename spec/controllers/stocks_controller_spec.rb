@@ -21,64 +21,57 @@ RSpec.describe StocksController, type: :controller do
   end
 
   describe 'POST create' do
+    let(:my_params) do
+      {
+        price: 100,
+        quantity: 2,
+        identifier: 'NIFTY 50',
+        indices: 'NIFTY TEST',
+        transaction_type: 'buy'
+      }
+    end
+  
     context 'when buy' do
       it 'creates a new transaction' do
         expect do
-          post :create, params: {
-            price: 100,
-            quantity: 1,
-            identifier: 'NIFTY 50',
-            indices: 'NIFTY TEST',
-            transaction_type: 'buy'
-          }
-        end.to change(Transaction, :count).by(1)
+          post :create, params: my_params
+        end.to change(Transaction, :count).by(2)
+      end
+
+      it 'recalculates owned_amount' do
+        post :create, params: my_params
+
+        expect(Stock.last.owned_amount).to eq(2)
       end
 
       it 'flashes a success message' do
-        post :create, params: {
-          price: 100,
-          quantity: 1,
-          identifier: 'NIFTY 50',
-          indices: 'NIFTY TEST',
-          transaction_type: 'buy'
-        }
+        post :create, params: my_params
         expect(flash[:notice]).to eq('Transaction success!')
       end
     end
 
     context 'when sell' do
       before do
-        post :create, params: {
-          price: 100,
-          quantity: 1,
-          identifier: 'NIFTY 50',
-          indices: 'NIFTY TEST',
-          transaction_type: 'buy'
-        }
+        post :create, params: my_params
         allow_any_instance_of(Stock).to receive(:current_last_price).and_return(120)
+        my_params[:transaction_type] = 'sell'
       end
 
       it 'creates a new transaction' do
         expect do
-          post :create, params: {
-            price: 100,
-            quantity: 1,
-            identifier: 'NIFTY 50',
-            indices: 'NIFTY TEST',
-            transaction_type: 'sell'
-          }
-        end.to change(Transaction, :count).by(3)
+          post :create, params: my_params
+        end.to change(Transaction, :count).by(4)
       end
 
       it 'flashes a success message' do
-        post :create, params: {
-          price: 100,
-          quantity: 1,
-          identifier: 'NIFTY 50',
-          indices: 'NIFTY TEST',
-          transaction_type: 'sell'
-        }
+        post :create, params: my_params
         expect(flash[:notice]).to eq('Transaction success!')
+      end
+
+      it 'recalculates owned_amount' do
+        post :create, params: my_params
+
+        expect(Stock.last.owned_amount).to eq(0)
       end
     end
 

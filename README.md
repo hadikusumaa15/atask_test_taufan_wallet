@@ -12,6 +12,7 @@
 * Database creation
   rake db:create
   rake db:migrate
+  rake db:seed
 
 * How to run the test suite
   rspec spec
