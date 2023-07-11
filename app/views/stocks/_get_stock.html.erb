@@ -41,11 +41,12 @@
                   <%= hidden_field_tag :indices, params[:indices] %>
                   <%= hidden_field_tag :identifier, stock['identifier'] %>
                   <%= hidden_field_tag :price, stock['lastPrice'] %>
+                  <%= hidden_field_tag :transaction_type, 'buy' %>
                   <div class="col-md-6">
                     <%= number_field_tag :quantity, 1, in: 1..100, class: 'form-control' %>
                   </div>
                   <div class="col-md-6">
-                    <%= submit_tag 'BUY NOW!', class: 'btn btn-primary', style: "background-color:darkgreen;" %>
+                    <%= submit_tag 'BUY', class: 'btn btn-primary', style: "background-color:darkgreen;" %>
                   </div>
                 </div>
               </form>

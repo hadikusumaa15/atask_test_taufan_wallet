@@ -21,28 +21,68 @@ RSpec.describe StocksController, type: :controller do
   end
 
   describe 'POST create' do
-    it 'creates a new transaction' do
-      expect do
+    context 'when buy' do
+      it 'creates a new transaction' do
+        expect do
+          post :create, params: {
+            price: 100,
+            quantity: 1,
+            identifier: 'NIFTY 50',
+            indices: 'NIFTY TEST',
+            transaction_type: 'buy'
+          }
+        end.to change(Transaction, :count).by(1)
+      end
+
+      it 'flashes a success message' do
         post :create, params: {
           price: 100,
           quantity: 1,
           identifier: 'NIFTY 50',
-          indices: 'NIFTY TEST'
+          indices: 'NIFTY TEST',
+          transaction_type: 'buy'
         }
-      end.to change(Transaction, :count).by(1)
+        expect(flash[:notice]).to eq('Transaction success!')
+      end
     end
 
-    it 'flashes a success message' do
-      post :create, params: {
-        price: 100,
-        quantity: 1,
-        identifier: 'NIFTY 50',
-        indices: 'NIFTY TEST'
-      }
-      expect(flash[:notice]).to eq('Transaction success!')
+    context 'when sell' do
+      before do
+        post :create, params: {
+          price: 100,
+          quantity: 1,
+          identifier: 'NIFTY 50',
+          indices: 'NIFTY TEST',
+          transaction_type: 'buy'
+        }
+        allow_any_instance_of(Stock).to receive(:current_last_price).and_return(120)
+      end
+
+      it 'creates a new transaction' do
+        expect do
+          post :create, params: {
+            price: 100,
+            quantity: 1,
+            identifier: 'NIFTY 50',
+            indices: 'NIFTY TEST',
+            transaction_type: 'sell'
+          }
+        end.to change(Transaction, :count).by(3)
+      end
+
+      it 'flashes a success message' do
+        post :create, params: {
+          price: 100,
+          quantity: 1,
+          identifier: 'NIFTY 50',
+          indices: 'NIFTY TEST',
+          transaction_type: 'sell'
+        }
+        expect(flash[:notice]).to eq('Transaction success!')
+      end
     end
 
-    context 'when the transaction fails' do
+    context 'when insufficient balance' do
       it 'does not create a new transaction' do
         expect do
           post :create, params: {
@@ -59,7 +99,8 @@ RSpec.describe StocksController, type: :controller do
           price: user.wallet.balance + 100_000,
           quantity: 1,
           identifier: 'NIFTY 50',
-          indices: 'NIFTY TEST'
+          indices: 'NIFTY TEST',
+          transaction_type: 'buy'
         }
         expect(flash[:alert]).to eq('Insufficient balance')
       end

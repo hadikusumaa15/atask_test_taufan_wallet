@@ -3,5 +3,6 @@
     <div class="col-md-12">
       <%= render 'shared/flash' %>
       <%= render 'get_stock' %>
+      <%= render 'stock_portfolio' if @my_stocks.present? %>
   </div>
 </div>

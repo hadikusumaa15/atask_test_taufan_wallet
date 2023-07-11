@@ -1,0 +1,41 @@
+<h2>My Stock Portfolio</h2>
+<div class="row">
+  <div class="col-md-12" style="overflow-x:scroll;">
+  <% unless @my_stocks.blank? %>
+    <table class="table">
+      <thead>
+        <tr>
+          <% ['indices', 'identifier', 'last_price', 'owned_amount', 'estimated_value', 'sell_amount'].each do |key| %>
+            <th><%= key.titleize %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+      <% @my_stocks.each do |stock| %>
+        <tr>
+          <% [stock[:indices], stock[:identifier], stock.current_last_price, stock[:owned_amount]].each do |val| %>
+            <td><%= val %></td>
+          <% end %>
+          <td><%= stock.last_price * stock.owned_amount %></td>
+          <td>
+            <form action="/stocks" method="post">
+              <div class='row'>
+                <%= hidden_field_tag :indices, stock[:indices] %>
+                <%= hidden_field_tag :identifier, stock['identifier'] %>
+                <%= hidden_field_tag :price, stock.last_price %>
+                <%= hidden_field_tag :transaction_type, 'sell' %>
+                <div class="col-md-6">
+                  <%= number_field_tag :quantity, 1, in: 0..stock[:owned_amount], class: 'form-control' %>
+                </div>
+                <div class="col-md-6">
+                  <%= submit_tag 'SELL', class: 'btn btn-primary', style: "background-color:darkred;" %>
+                </div>
+              </div>
+            </form>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

@@ -5,6 +5,7 @@ class StocksController < ApplicationController
   require 'net/http'
 
   def index
+    @my_stocks = Stock.where(user: current_user).where.not(owned_amount: 0)
     @indices_list = LatestStockPrice.indices_list
     @stocks = WillPaginate::Collection.create(page, 10, selected_stocks.length) do |pager|
       start = (pager.current_page - 1) * pager.per_page
@@ -13,10 +14,14 @@ class StocksController < ApplicationController
   end
 
   def create
+    source_wallet = params['transaction_type'] == 'sell' ? stock_wallet : user_wallet
+    target_wallet = params['transaction_type'] == 'sell' ? user_wallet : stock_wallet
+  
     begin
       ActiveRecord::Base.transaction do
-        raise 'Insufficient balance' if (params[:price].to_f * params[:quantity].to_f) > source_wallet.current_balance
-
+        stock = stock_wallet.walletable
+        stock.recalculate_balance if params['transaction_type'] == 'sell'
+        raise 'Insufficient balance' if ((params[:price].to_f * params[:quantity].to_f) > source_wallet.current_balance) && params['transaction_type'] == 'buy'
         records = []
 
         params[:quantity].to_i.times do
@@ -24,11 +29,12 @@ class StocksController < ApplicationController
             source_wallet: source_wallet,
             target_wallet: target_wallet,
             amount: params[:price],
-            description: "Buy '#{params[:identifier]}' Stock"
+            description: "#{params['transaction_type'].upcase} '#{params[:identifier]}' Stock"
           }
         end
 
         @transactions = Transaction.create(records)
+        stock.current_owned_amount
         message = @transactions.pluck(:errors).compact.blank? ? {notice: 'Transaction success!'} : {alert: @transaction.errors.full_messages.join(', ')}
 
         redirect_back fallback_location: root_path, notice: message[:notice], alert: message[:alert]
@@ -44,11 +50,11 @@ class StocksController < ApplicationController
     params[:page] || 1 rescue 1
   end
 
-  def source_wallet
+  def user_wallet
     current_user.wallet
   end
 
-  def target_wallet
+  def stock_wallet
     wallet = current_user.stocks&.find_by(identifier: params[:identifier], indices: params[:indices])&.wallet
     wallet = Wallet.generate_new_stock_wallet(
       user: current_user, indices: params[:indices],
