@@ -8,15 +8,27 @@ class SessionsController < ApplicationController
     if user
       user.generate_access_token
       session[:access_token] = user.access_token
-      redirect_to root_path, notice: 'Logged in successfully'
+
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: 'Logged in successfully' }
+        format.json { render json: { status: 'success', message: 'Logged in successfully' } }
+      end
     else
       flash.alert = 'Invalid username or password'
-      redirect_to login_path
+
+      respond_to do |format|
+        format.html { redirect_to login_path }
+        format.json { render json: { status: 'error', message: 'Invalid username or password' }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     session[:access_token] = nil
-    redirect_to root_path, notice: 'Logged out successfully'
+
+    respond_to do |format|
+      format.html { redirect_to root_path, notice: 'Logged out successfully' }
+      format.json { render json: { status: 'success', message: 'Logged out successfully' } }
+    end
   end
 end

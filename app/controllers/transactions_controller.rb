@@ -2,23 +2,34 @@ class TransactionsController < ApplicationController
   before_action :authorize_user
 
   def new
-    @transaction = Transaction.new
-    @target_wallets = Wallet.where.not(id: current_user.wallet&.id)
     @my_wallets = Wallet.where(id: my_wallet_ids)
+    @target_wallets = Wallet.where.not(id: current_user.wallet&.id)
+    @transaction = Transaction.new
+
+    respond_to do |format|
+      format.json { render json: { target_wallets: @target_wallets, my_wallets: @my_wallets } }
+      format.html { render :new }
+    end
   end
 
   def create
     @transaction = Transaction.new(
-      source_wallet: Wallet.find(transaction_params[:source_wallet]),
       target_wallet: Wallet.find(transaction_params[:target_wallet]),
-      amount: transaction_params[:amount],
+      source_wallet: Wallet.find(transaction_params[:source_wallet]),
       description: transaction_params[:description]
+      amount: transaction_params[:amount],
     )
 
     if @transaction.save
-      redirect_back fallback_location: root_path, notice: 'Transaction success!'
+      respond_to do |format|
+        format.json { render json: { message: 'Transaction success!' } }
+        format.html { redirect_back fallback_location: root_path,notice: 'Transaction success!' }
+      end
     else
-      redirect_back fallback_location: root_path, alert: @transaction.errors.full_messages.join(', ')
+      respond_to do |format|
+        format.json { render json: { error: @transaction.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+        format.html { redirect_back fallback_location: root_path, alert: @transaction.errors.full_messages.join(', ') }
+      end
     end
   end
 
@@ -31,6 +42,6 @@ class TransactionsController < ApplicationController
   end
 
   def transaction_params
-    params.require(:transaction).permit(:source_wallet, :target_wallet, :amount, :description )
+    params.require(:transaction).permit(:source_wallet, :target_wallet, :amount, :description)
   end
 end

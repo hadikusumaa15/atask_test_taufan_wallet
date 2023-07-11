@@ -5,11 +5,16 @@ class StocksController < ApplicationController
   require 'net/http'
 
   def index
-    @my_stocks = Stock.where(user: current_user).where.not(owned_amount: 0)
     @indices_list = LatestStockPrice.indices_list
+    @my_stocks = Stock.where(user: current_user).where.not(owned_amount: 0)
     @stocks = WillPaginate::Collection.create(page, 10, selected_stocks.length) do |pager|
       start = (pager.current_page - 1) * pager.per_page
       pager.replace(selected_stocks[start, pager.per_page])
+    end
+
+    respond_to do |format|
+      format.json { render json: {my_stocks: @my_stocks, stocks: @stocks} }
+      format.html { render :index }
     end
   end
 
@@ -23,10 +28,16 @@ class StocksController < ApplicationController
         @transactions = Transaction.create(transaction_records)
         stock.current_owned_amount
 
-        redirect_back fallback_location: root_path, notice: 'Transaction success!'
+        respond_to do |format|
+          format.json { render json: { message: 'Transaction success!' } }
+          format.html { redirect_back fallback_location: root_path, notice: 'Transaction success!' }
+        end
       end
     rescue => e
-      redirect_back fallback_location: root_path, alert: e.message
+      respond_to do |format|
+        format.json { render json: { error: e.message }, status: :unprocessable_entity }
+        format.html { redirect_back fallback_location: root_path, alert: e.message }
+      end
     end
   end
 
