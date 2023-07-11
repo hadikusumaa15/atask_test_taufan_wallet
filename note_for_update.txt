@@ -1,1 +1,1 @@
-git add . && git commit -m 'refactor stocks_controller' && git push
+git add . && git commit -m 'remove unnecessary codes' && git push
