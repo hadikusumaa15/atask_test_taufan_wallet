@@ -16,9 +16,9 @@ class TransactionsController < ApplicationController
     )
 
     if @transaction.save
-      redirect_to home_path, notice: 'Transaction success!'
+      redirect_back fallback_location: root_path, notice: 'Transaction success!'
     else
-      redirect_to home_path, alert: @transaction.errors.full_messages.join(', ')
+      redirect_back fallback_location: root_path, alert: @transaction.errors.full_messages.join(', ')
     end
   end
 

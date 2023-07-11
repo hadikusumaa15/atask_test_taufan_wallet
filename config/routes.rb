@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :wallets, only: [:index]
   resources :teams, only: [:index]
+  resources :stocks, only: [:index, :create]
   resources :transactions, only: [:create]
 
   get 'login', to: 'sessions#new'

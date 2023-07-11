@@ -67,4 +67,5 @@ group :development, :test do
   gem 'byebug'
   gem 'shoulda-matchers'
   gem 'rails-controller-testing'
+  gem 'webmock'
 end

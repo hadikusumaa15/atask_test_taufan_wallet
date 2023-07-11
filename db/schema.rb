@@ -12,11 +12,16 @@
 
 ActiveRecord::Schema[7.0].define(version: 2023_07_06_040911) do
   create_table "stocks", force: :cascade do |t|
-    t.string "name"
+    t.string "indices"
+    t.string "identifier"
+    t.float "last_price"
+    t.integer "owned_amount"
     t.string "category"
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["user_id"], name: "index_stocks_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|

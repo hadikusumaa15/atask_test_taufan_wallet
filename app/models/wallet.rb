@@ -11,6 +11,21 @@ class Wallet < ApplicationRecord
     self.balance
   end
 
+  def self.generate_new_stock_wallet(user:, indices:, identifier:)
+    stock = Stock.create(
+      user: user,
+      indices: indices,
+      identifier: identifier,
+      owned_amount: 0
+    )
+
+    wallet = self.create(
+      balance: 0,
+      walletable: stock,
+      description: "Wallet Stock Owned by #{user.username}"
+    )
+  end
+
   def wallet_owner
     case self.walletable_type
     when 'User'
@@ -18,7 +33,7 @@ class Wallet < ApplicationRecord
     when 'Team'
       return self.walletable.name
     when 'Stock'
-      return self.walletable.name
+      return self.walletable.identifier
     else
       return 'External'
     end

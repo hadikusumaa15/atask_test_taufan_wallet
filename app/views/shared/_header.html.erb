@@ -16,15 +16,15 @@
         </li>
 
         <li class="nav-item">
+          <%= link_to "My Team", teams_path, class: active_tab(["/teams"]) if @current_user&.is_team_admin %>
+        </li>
+
+        <li class="nav-item">
           <%= link_to "Transaction", transactions_path, class: active_tab(["/transactions"]) if @current_user %>
         </li>
 
         <li class="nav-item">
-          <%= link_to "Stock", home_path, class: active_tab(["/stocks"]) if @current_user %>
-        </li>
-
-        <li class="nav-item">
-          <%= link_to "My Team", teams_path, class: active_tab(["/teams"]) if @current_user&.is_team_admin %>
+          <%= link_to "Stocks", stocks_path, class: active_tab(["/stocks"]) if @current_user %>
         </li>
 
         <% log_class = active_tab(["/login", "/logout"]) %>

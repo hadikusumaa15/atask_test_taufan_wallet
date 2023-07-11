@@ -1,0 +1,63 @@
+<h2>Get Stocks</h2>
+<div class="row">
+  <div class="col-md-12">
+    <form action="/stocks" method="get">
+    <div class="row">
+      <div class="col-md-2">
+        <%= select_tag :indices, options_for_select(@indices_list, selected: params[:indices]), prompt: '-- Select Indices --', class: 'form-control' %>
+      </div>
+  
+      <div class="col-md-2">
+        <%= text_field_tag :identifier, params[:identifier], placeholder: '-- Identifier (optional)--', class: 'form-control' %>
+      </div>
+  
+      <div class="col-md-2">
+        <%= submit_tag 'Search', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </form>
+  
+  </div>
+
+  <div class="col-md-12" style="overflow-x:scroll;">
+    <% unless @stocks.blank? %>
+      <table class="table">
+        <thead>
+          <tr>
+            <% ['Symbol', 'Identifier', 'Price', 'Update Time', 'Buy Amount'].each do |key| %>
+              <th><%= key.titleize %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+        <% @stocks.each do |stock| %>
+          <tr>
+            <% ['symbol', 'identifier', 'lastPrice', 'lastUpdateTime'].each do |key| %>
+              <td><%= stock[key] %></td>
+            <% end %>
+            <td>
+              <form action="/stocks" method="post">
+                <div class='row'>
+                  <%= hidden_field_tag :indices, params[:indices] %>
+                  <%= hidden_field_tag :identifier, stock['identifier'] %>
+                  <%= hidden_field_tag :price, stock['lastPrice'] %>
+                  <div class="col-md-6">
+                    <%= number_field_tag :quantity, 1, in: 1..100, class: 'form-control' %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= submit_tag 'BUY NOW!', class: 'btn btn-primary', style: "background-color:darkgreen;" %>
+                  </div>
+                </div>
+              </form>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+
+  <div class="pagination justify-content-center" style="margin:20px;">
+    <%= will_paginate @stocks, class: "pagination-sm" %>
+  </div>
+</div>
